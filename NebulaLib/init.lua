@@ -10,14 +10,14 @@ local RunService = game:GetService("RunService")
 -- Components
 local Window = require(script.Components.Window)
 local Elements = require(script.Components.Elements)
-local SpaceTheme = require(script.Themes.SpaceTheme)
+local ThemeManager = require(script.Themes.ThemeManager)
 local InputHandler = require(script.Utils.InputHandler)
 local ConfigSystem = require(script.Utils.ConfigSystem)
 
 -- Properties
 NebulaLib.Windows = {}
 NebulaLib.Flags = {}
-NebulaLib.Theme = SpaceTheme
+NebulaLib.ThemeManager = ThemeManager
 
 function NebulaLib.new()
     local self = setmetatable({}, NebulaLib)
@@ -25,12 +25,34 @@ function NebulaLib.new()
     return self
 end
 
+function NebulaLib:SetTheme(themeName)
+    if self.ThemeManager.SetTheme(themeName) then
+        for _, window in ipairs(self.Windows) do
+            self.ThemeManager.ApplyTheme(window, themeName)
+        end
+        return true
+    end
+    return false
+end
+
+function NebulaLib:GetCurrentTheme()
+    return self.ThemeManager.GetCurrentTheme()
+end
+
+function NebulaLib:GetAvailableThemes()
+    return self.ThemeManager.GetThemes()
+end
+
+function NebulaLib:RegisterTheme(name, theme)
+    return self.ThemeManager.RegisterTheme(name, theme)
+end
+
 function NebulaLib:MakeWindow(config)
     assert(type(config) == "table", "Config must be a table!")
     
     local windowConfig = {
         Name = config.Name or "Nebula Library",
-        Theme = self.Theme,
+        Theme = ThemeManager.GetCurrentTheme(),
         HidePremium = config.HidePremium or false,
         SaveConfig = config.SaveConfig or false,
         ConfigFolder = config.ConfigFolder or "NebulaConfig"
@@ -38,6 +60,9 @@ function NebulaLib:MakeWindow(config)
     
     local newWindow = Window.new(windowConfig)
     table.insert(self.Windows, newWindow)
+    
+    -- Apply current theme
+    self.ThemeManager.ApplyTheme(newWindow, self.ThemeManager.GetCurrentTheme())
     
     if config.SaveConfig then
         ConfigSystem.InitializeConfig(config.ConfigFolder)
