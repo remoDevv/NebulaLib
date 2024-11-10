@@ -15,7 +15,7 @@ A unified cross-platform Roblox UI library providing core interface components a
 ## Installation
 
 ```lua
-local NebulaLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/YOUR_USERNAME/nebula-ui/main/NebulaLibrary.lua'))()
+local NebulaLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/remoDevv/nebula-ui/main/NebulaLibrary.lua'))()
 ```
 
 ## Basic Usage
