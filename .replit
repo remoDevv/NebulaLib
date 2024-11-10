@@ -1,0 +1,31 @@
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Lua Syntax Check"
+
+[[workflows.workflow]]
+name = "Lua Syntax Check"
+author = "agent"
+
+[workflows.workflow.metadata]
+agentRequireRestartOnSave = false
+
+[[workflows.workflow.tasks]]
+task = "packager.installForAll"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "lua -v && lua OrionLib/init.lua"
+
+[deployment]
+run = ["sh", "-c", "lua -v && lua OrionLib/init.lua"]
+
+[nix]
+channel = "stable-24_05"
